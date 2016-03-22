@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6f2dc9df326b48508171bb40599daa73" Name="Diagram1">
+        <EntityTypeShape EntityType="InvoiceSystem.client" Width="1.5" PointX="0.75" PointY="2.5" />
+        <EntityTypeShape EntityType="InvoiceSystem.invoiceheader" Width="1.5" PointX="3" PointY="1.25" />
+        <EntityTypeShape EntityType="InvoiceSystem.invoiceline" Width="1.5" PointX="5.25" PointY="2.625" />
+        <EntityTypeShape EntityType="InvoiceSystem.project" Width="1.5" PointX="3" PointY="4.625" />
+        <AssociationConnector Association="InvoiceSystem.FK_invoiceheaders_clients" />
+        <AssociationConnector Association="InvoiceSystem.FK_projects_clients" />
+        <AssociationConnector Association="InvoiceSystem.FK_invoicelines_invoiceheaders" />
+        <AssociationConnector Association="InvoiceSystem.FK_invoicelines_projects" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

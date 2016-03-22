@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="InvoiceSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="clients">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="clientname" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="address" Type="varchar" MaxLength="255" />
+          <Property Name="abn" Type="varchar" MaxLength="20" />
+          <Property Name="phonenumber" Type="varchar" MaxLength="20" />
+          <Property Name="email" Type="varchar" MaxLength="50" />
+          <Property Name="taxrate" Type="float" Nullable="false" />
+          <Property Name="isme" Type="bit" Nullable="false" />
+          <Property Name="currentInvoiceNumber" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="invoiceheaders">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="number" Type="int" Nullable="false" />
+          <Property Name="datecreated" Type="datetime" Nullable="false" />
+          <Property Name="hourlyrate" Type="float" />
+          <Property Name="taxrate" Type="float" />
+          <Property Name="fk_client" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="invoicelines">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="number" Type="int" Nullable="false" />
+          <Property Name="datecompleted" Type="datetime" Nullable="false" />
+          <Property Name="description" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="hourlyrate" Type="float" />
+          <Property Name="hours" Type="float" Nullable="false" />
+          <Property Name="fk_project" Type="uniqueidentifier" />
+          <Property Name="fk_invoiceheader" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="projects">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="hourlyrate" Type="float" Nullable="false" />
+          <Property Name="fk_client" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_invoiceheaders_clients">
+          <End Role="clients" Type="Self.clients" Multiplicity="1" />
+          <End Role="invoiceheaders" Type="Self.invoiceheaders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clients">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="invoiceheaders">
+              <PropertyRef Name="fk_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_invoicelines_invoiceheaders">
+          <End Role="invoiceheaders" Type="Self.invoiceheaders" Multiplicity="1" />
+          <End Role="invoicelines" Type="Self.invoicelines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invoiceheaders">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="invoicelines">
+              <PropertyRef Name="fk_invoiceheader" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_invoicelines_projects">
+          <End Role="projects" Type="Self.projects" Multiplicity="0..1" />
+          <End Role="invoicelines" Type="Self.invoicelines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="projects">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="invoicelines">
+              <PropertyRef Name="fk_project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_projects_clients">
+          <End Role="clients" Type="Self.clients" Multiplicity="1" />
+          <End Role="projects" Type="Self.projects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="clients">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="projects">
+              <PropertyRef Name="fk_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InvoiceSystemModelStoreContainer">
+          <EntitySet Name="clients" EntityType="Self.clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invoiceheaders" EntityType="Self.invoiceheaders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="invoicelines" EntityType="Self.invoicelines" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="projects" EntityType="Self.projects" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_invoiceheaders_clients" Association="Self.FK_invoiceheaders_clients">
+            <End Role="clients" EntitySet="clients" />
+            <End Role="invoiceheaders" EntitySet="invoiceheaders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_invoicelines_invoiceheaders" Association="Self.FK_invoicelines_invoiceheaders">
+            <End Role="invoiceheaders" EntitySet="invoiceheaders" />
+            <End Role="invoicelines" EntitySet="invoicelines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_invoicelines_projects" Association="Self.FK_invoicelines_projects">
+            <End Role="projects" EntitySet="projects" />
+            <End Role="invoicelines" EntitySet="invoicelines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_projects_clients" Association="Self.FK_projects_clients">
+            <End Role="clients" EntitySet="clients" />
+            <End Role="projects" EntitySet="projects" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="InvoiceSystem" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="InvoiceSystemEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="clients" EntityType="InvoiceSystem.client" />
+          <EntitySet Name="invoiceheaders" EntityType="InvoiceSystem.invoiceheader" />
+          <EntitySet Name="invoicelines" EntityType="InvoiceSystem.invoiceline" />
+          <EntitySet Name="projects" EntityType="InvoiceSystem.project" />
+          <AssociationSet Name="FK_invoiceheaders_clients" Association="InvoiceSystem.FK_invoiceheaders_clients">
+            <End Role="client" EntitySet="clients" />
+            <End Role="invoiceheader" EntitySet="invoiceheaders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_projects_clients" Association="InvoiceSystem.FK_projects_clients">
+            <End Role="client" EntitySet="clients" />
+            <End Role="project" EntitySet="projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_invoicelines_invoiceheaders" Association="InvoiceSystem.FK_invoicelines_invoiceheaders">
+            <End Role="invoiceheader" EntitySet="invoiceheaders" />
+            <End Role="invoiceline" EntitySet="invoicelines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_invoicelines_projects" Association="InvoiceSystem.FK_invoicelines_projects">
+            <End Role="project" EntitySet="projects" />
+            <End Role="invoiceline" EntitySet="invoicelines" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="client">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="clientname" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="abn" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="phonenumber" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="taxrate" Type="Double" Nullable="false" />
+          <Property Name="isme" Type="Boolean" Nullable="false" />
+          <Property Name="currentInvoiceNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="invoiceheaders" Relationship="InvoiceSystem.FK_invoiceheaders_clients" FromRole="client" ToRole="invoiceheader" />
+          <NavigationProperty Name="projects" Relationship="InvoiceSystem.FK_projects_clients" FromRole="client" ToRole="project" />
+        </EntityType>
+        <EntityType Name="invoiceheader">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="number" Type="Int32" Nullable="false" />
+          <Property Name="datecreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="hourlyrate" Type="Double" />
+          <Property Name="taxrate" Type="Double" />
+          <Property Name="fk_client" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="client" Relationship="InvoiceSystem.FK_invoiceheaders_clients" FromRole="invoiceheader" ToRole="client" />
+          <NavigationProperty Name="invoicelines" Relationship="InvoiceSystem.FK_invoicelines_invoiceheaders" FromRole="invoiceheader" ToRole="invoiceline" />
+        </EntityType>
+        <EntityType Name="invoiceline">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="number" Type="Int32" Nullable="false" />
+          <Property Name="datecompleted" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="hourlyrate" Type="Double" />
+          <Property Name="hours" Type="Double" Nullable="false" />
+          <Property Name="fk_project" Type="Guid" />
+          <Property Name="fk_invoiceheader" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="invoiceheader" Relationship="InvoiceSystem.FK_invoicelines_invoiceheaders" FromRole="invoiceline" ToRole="invoiceheader" />
+          <NavigationProperty Name="project" Relationship="InvoiceSystem.FK_invoicelines_projects" FromRole="invoiceline" ToRole="project" />
+        </EntityType>
+        <EntityType Name="project">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="hourlyrate" Type="Double" Nullable="false" />
+          <Property Name="fk_client" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="client" Relationship="InvoiceSystem.FK_projects_clients" FromRole="project" ToRole="client" />
+          <NavigationProperty Name="invoicelines" Relationship="InvoiceSystem.FK_invoicelines_projects" FromRole="project" ToRole="invoiceline" />
+        </EntityType>
+        <Association Name="FK_invoiceheaders_clients">
+          <End Type="InvoiceSystem.client" Role="client" Multiplicity="1" />
+          <End Type="InvoiceSystem.invoiceheader" Role="invoiceheader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="client">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="invoiceheader">
+              <PropertyRef Name="fk_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_projects_clients">
+          <End Type="InvoiceSystem.client" Role="client" Multiplicity="1" />
+          <End Type="InvoiceSystem.project" Role="project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="client">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="project">
+              <PropertyRef Name="fk_client" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_invoicelines_invoiceheaders">
+          <End Type="InvoiceSystem.invoiceheader" Role="invoiceheader" Multiplicity="1" />
+          <End Type="InvoiceSystem.invoiceline" Role="invoiceline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="invoiceheader">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="invoiceline">
+              <PropertyRef Name="fk_invoiceheader" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_invoicelines_projects">
+          <End Type="InvoiceSystem.project" Role="project" Multiplicity="0..1" />
+          <End Type="InvoiceSystem.invoiceline" Role="invoiceline" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="invoiceline">
+              <PropertyRef Name="fk_project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="InvoiceSystemModelStoreContainer" CdmEntityContainer="InvoiceSystemEntities">
+          <EntitySetMapping Name="clients">
+            <EntityTypeMapping TypeName="InvoiceSystem.client">
+              <MappingFragment StoreEntitySet="clients">
+                <ScalarProperty Name="currentInvoiceNumber" ColumnName="currentInvoiceNumber" />
+                <ScalarProperty Name="isme" ColumnName="isme" />
+                <ScalarProperty Name="taxrate" ColumnName="taxrate" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="phonenumber" ColumnName="phonenumber" />
+                <ScalarProperty Name="abn" ColumnName="abn" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="clientname" ColumnName="clientname" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="invoiceheaders">
+            <EntityTypeMapping TypeName="InvoiceSystem.invoiceheader">
+              <MappingFragment StoreEntitySet="invoiceheaders">
+                <ScalarProperty Name="fk_client" ColumnName="fk_client" />
+                <ScalarProperty Name="taxrate" ColumnName="taxrate" />
+                <ScalarProperty Name="hourlyrate" ColumnName="hourlyrate" />
+                <ScalarProperty Name="datecreated" ColumnName="datecreated" />
+                <ScalarProperty Name="number" ColumnName="number" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="invoicelines">
+            <EntityTypeMapping TypeName="InvoiceSystem.invoiceline">
+              <MappingFragment StoreEntitySet="invoicelines">
+                <ScalarProperty Name="fk_invoiceheader" ColumnName="fk_invoiceheader" />
+                <ScalarProperty Name="fk_project" ColumnName="fk_project" />
+                <ScalarProperty Name="hours" ColumnName="hours" />
+                <ScalarProperty Name="hourlyrate" ColumnName="hourlyrate" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="datecompleted" ColumnName="datecompleted" />
+                <ScalarProperty Name="number" ColumnName="number" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="projects">
+            <EntityTypeMapping TypeName="InvoiceSystem.project">
+              <MappingFragment StoreEntitySet="projects">
+                <ScalarProperty Name="fk_client" ColumnName="fk_client" />
+                <ScalarProperty Name="hourlyrate" ColumnName="hourlyrate" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
